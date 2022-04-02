@@ -59,16 +59,15 @@ public class Controller : MonoBehaviour
     void Update()
     {
         if (!health.canMove) return;
-        if (rb.velocity.x == 0 && isGrounded && myState == state.roll) { myState = state.idle; }
+        if (rb.velocity.x == 0 && isGrounded) { myState = state.idle; }
         isGrounded = SetGrounded();
-        if(myState != state.roll) doJump();
+        doJump();
         HandleAnimations();
     }
 
     void FixedUpdate()
     {
-        if (getRoll() && canRoll) { Roll(); StartCoroutine(startRollCooldown()); }
-        if(myState == state.roll) return;
+        if (myState == state.idle) rb.velocity = Vector2.zero;
         Move();
         //NormalizeSlope();
         HandleMouse();
@@ -120,12 +119,6 @@ public class Controller : MonoBehaviour
                 a.SetBool("Idle", false);
                 a.SetBool("Roll", false);
                 a.SetBool("Grounded", false);
-                a.SetFloat("Xmove", -1);
-                break;
-            case state.roll:
-                a.SetBool("Idle", false);
-                a.SetBool("Roll", true);
-                a.SetBool("Grounded", true);
                 a.SetFloat("Xmove", -1);
                 break;
         }
