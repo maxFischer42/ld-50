@@ -124,3 +124,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deathEffect: {fileID: 241959473418976924, guid: bbc4de9ff1600944d8bf076c6ae3e8e1, type: 3}
+  item: {fileID: 247890115627447077, guid: 06987eb850a0f42409a4d152d687c0ff, type: 3}

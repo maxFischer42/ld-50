@@ -8,6 +8,8 @@ public class EnemyHealthManager : MonoBehaviour
     public Color transparent;
     public GameObject deathEffect;
 
+    public List<GameObject> drops = new List<GameObject>();
+
     private SpriteRenderer sr;
 
     public int maxHealth;
@@ -53,7 +55,20 @@ public class EnemyHealthManager : MonoBehaviour
     {
         GameObject a = (GameObject)Instantiate(deathEffect, transform);
         a.transform.parent = null;
+        randomDrop();
         Destroy(a, 0.6f);
         Destroy(gameObject);
     }
+
+    float dropChance = 0.15f;
+
+    public void randomDrop() {
+        float r = Random.Range(0.000f, 1.000f);
+        if(r <= dropChance)
+        {
+            GameObject a = (GameObject)Instantiate(item, transform.position, Quaternion.identity, null);
+        }
+    }
+
+    public GameObject item;
 }

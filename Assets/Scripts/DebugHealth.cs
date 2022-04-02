@@ -10,7 +10,21 @@ public class DebugHealth : MonoBehaviour
     {
         GameObject a = (GameObject)Instantiate(deathEffect, transform);
         a.transform.parent = null;
+        randomDrop();
         Destroy(a, 0.6f);
         Destroy(gameObject);
     }
+
+    float dropChance = 0.25f;
+
+    public void randomDrop()
+    {
+        float r = Random.Range(0.000f, 1.000f);
+        if (r <= dropChance)
+        {
+            GameObject a = (GameObject)Instantiate(item, transform.position, Quaternion.identity, null);
+        }
+    }
+
+    public GameObject item;
 }

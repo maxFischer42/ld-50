@@ -35,7 +35,7 @@ public class PlayerMovementPredict : MonoBehaviour
 
     private void Start()
     {
-        SetPlayer(GameObject.FindGameObjectWithTag("Player"));
+        SetPlayer(GameObject.Find("Player"));
     }
 
     void Update()

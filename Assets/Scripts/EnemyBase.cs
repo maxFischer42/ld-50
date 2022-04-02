@@ -8,6 +8,7 @@ public class EnemyBase : MonoBehaviour
     private Rigidbody2D rigidbody;
     public LayerMask layermask;
 
+
     public void SetPlayer(Transform _object)
     {
         playerObject = _object;
@@ -26,4 +27,13 @@ public class EnemyBase : MonoBehaviour
     {
         return rigidbody;
     }
+    public bool playerInRange(float type)
+    {
+        if ((GetPlayer().transform.position - transform.position).magnitude <= type)
+        {
+            return true;
+        }
+        return false;
+    }
+
 }

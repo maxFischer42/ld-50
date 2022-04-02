@@ -25,7 +25,7 @@ public class Controller : MonoBehaviour
     public float disToGround;
     public LayerMask groundLayermask;
 
-    public enum state { idle, move, jump, hurt};
+    public enum state { idle, move, jump, hurt, roll};
     public state myState;
 
     public GameObject jumpEffect;
@@ -36,23 +36,39 @@ public class Controller : MonoBehaviour
 
     bool isSlide = false;
 
+    bool canRoll = true;
+
+    public UpgradeManager upgrade;
+
+    public float rollSpeed;
+
+    private PlayerHealthManager health;
+
     private void Start()
     {
         lr = GetComponent<LineRenderer>();
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         a = GetComponent<Animator>();
+        health = GetComponent<PlayerHealthManager>();
+        UpgradeCheck();
     }
+
+    int dir = 1;
 
     void Update()
     {
+        if (!health.canMove) return;
+        if (rb.velocity.x == 0 && isGrounded && myState == state.roll) { myState = state.idle; }
         isGrounded = SetGrounded();
-        doJump();
+        if(myState != state.roll) doJump();
         HandleAnimations();
     }
 
     void FixedUpdate()
     {
+        if (getRoll() && canRoll) { Roll(); StartCoroutine(startRollCooldown()); }
+        if(myState == state.roll) return;
         Move();
         //NormalizeSlope();
         HandleMouse();
@@ -82,7 +98,7 @@ public class Controller : MonoBehaviour
 
     void HandleAnimations()
     {
-        if (!isGrounded)
+        if (!isGrounded && myState != state.roll)
         {
             myState = state.jump;
         }
@@ -90,17 +106,26 @@ public class Controller : MonoBehaviour
         {
             case state.idle:
                 a.SetBool("Idle", true);
+                a.SetBool("Roll", false);
                 a.SetBool("Grounded", true);
                 a.SetFloat("Xmove", -1);
                 break;
             case state.move:
                 a.SetBool("Idle", false);
+                a.SetBool("Roll", false);
                 a.SetBool("Grounded", true);
                 a.SetFloat("Xmove", 1);
                 break;
             case state.jump:
                 a.SetBool("Idle", false);
+                a.SetBool("Roll", false);
                 a.SetBool("Grounded", false);
+                a.SetFloat("Xmove", -1);
+                break;
+            case state.roll:
+                a.SetBool("Idle", false);
+                a.SetBool("Roll", true);
+                a.SetBool("Grounded", true);
                 a.SetFloat("Xmove", -1);
                 break;
         }
@@ -108,7 +133,9 @@ public class Controller : MonoBehaviour
 
     void Move()
     {
+        if(myState == state.roll) return;
         float x = getX();
+        if (x != 0) dir = (int)x;
         if (x != 0) MoveHorizontally(x);
         if(x == 0 && isGrounded) { myState = state.idle; }
     }
@@ -161,6 +188,7 @@ public class Controller : MonoBehaviour
         bool checkLand = false;
         if(!isGrounded)
         {
+
             checkLand = true;
         }
         lr.SetPosition(0, transform.position);
@@ -176,6 +204,25 @@ public class Controller : MonoBehaviour
         return grounded;
     }
 
+    public void Roll()
+    {
+        float x = dir;
+        if (isGrounded) {
+            myState = state.roll;
+            rb.velocity = Vector2.zero;
+            rb.AddForce(new Vector2(x * rollSpeed, 0f));
+        }    
+    }
+
+    IEnumerator startRollCooldown()
+    {
+        canRoll = false;
+        yield return new WaitForSeconds(rollCooldown - rollOffset);
+        canRoll = true;
+    }
+
+
+
     void MoveHorizontally(float i)
     {
         float newX = movementSpeed;
@@ -186,5 +233,33 @@ public class Controller : MonoBehaviour
     public float getX() { return Input.GetAxis("Horizontal"); }
     public float getYX() { return Input.GetAxis("Vertical"); }
     public bool getAttack() { return Input.GetButton("Fire1"); }
+    public bool getRoll() { return Input.GetButtonDown("Roll"); }
 
+    public float fallOffset = 0f;
+    public float jumpOffset = 0f;
+    public float speedIncrease = 0f;
+    public float rollOffset = 0f;
+    public float rollCooldown = 1.5f;
+
+    public float gravity = 2;
+    public float rollTimer = 3f;
+    public float jump = 10;
+    public float speed = 10;
+
+    public void UpgradeCheck()
+    {
+        float f = upgrade.fallDecrease;
+        if (f >= 1) f = 1;
+        float j = upgrade.jumpIncrease;
+        if (j >= 5) j = 5;
+        float s = upgrade.movementIncrease;
+        if (s >= 2) s = 2;
+        float r = upgrade.rollDecrease;
+        if (r >= 1) r = 1;
+
+        rb.gravityScale = gravity - f;
+        jumpForce = jump + j;
+        rollOffset = r;
+        movementSpeed = speed + s;
+     }
 }

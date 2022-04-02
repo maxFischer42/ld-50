@@ -22,9 +22,11 @@ public class TurretController : MonoBehaviour
     public LayerMask hitLayerMask;
     public float rotateOffset;
 
+    public int damage;
+
     private void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        player = GameObject.Find("Player").transform;
         prediction = GetComponent<PlayerMovementPredict>();
     }
 
@@ -57,9 +59,12 @@ public class TurretController : MonoBehaviour
         Vector3 pos;
         if (hit.collider)
         {
-            pos = hit.point;
             //Debug Damage
-            if (hit.transform.gameObject.GetComponent<DebugHealth>()) hit.transform.gameObject.GetComponent<DebugHealth>().Kill();
+            if (hit.transform.gameObject.GetComponent<PlayerHealthManager>())
+            {
+                hit.transform.gameObject.GetComponent<PlayerHealthManager>().HurtPlayer(damage);
+            }
+            pos = hit.point;
         }
         else
         {
