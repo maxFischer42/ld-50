@@ -8,7 +8,7 @@ public class PlayerHealthManager : MonoBehaviour
     public float maxHp = 20;
     public float currentHp;
     public bool canMove = true;
-    public float hurtTime = 0.4f;
+    public float reactTime = 0.4f;
 
     public Color defaultColor = Color.white;
     public Color hurtColor = Color.white;
@@ -22,12 +22,26 @@ public class PlayerHealthManager : MonoBehaviour
 
     public bool hurt;
 
+    public int def = 0;
+
+    public float hurtLength = 0.3f;
+    float hurtTimer = 0;
+
     private void Update()
     {
+        UpdateHp();
         if(hurt)
         {
             hurt = false;
             HurtPlayer(1);
+        }
+        if(!canMove)
+        {
+            hurtTimer -= Time.deltaTime;
+            if(hurtTimer < 0)
+            {
+                canMove = true;
+            }
         }
     }
 
@@ -39,26 +53,56 @@ public class PlayerHealthManager : MonoBehaviour
         anim = GetComponent<Animator>();
     }
 
+    public void UpdateHp()
+    {
+        float healthbarCurrent = (currentHp / maxHp) * healthbarMax;
+        if (currentHp > maxHp) currentHp = maxHp;
+        healthBar.rectTransform.sizeDelta = new Vector2(healthbarCurrent, healthBar.rectTransform.sizeDelta.y);
+    }
+
     public void HurtPlayer(int damage)
     {
         if (!canMove) return;
+        if (!canHurt) return;
+        if (damage > 1 && def > 0) {
+            if (def > 15)
+            {
+                damage--;
+            } else
+            {
+                int a = Random.Range(0, 30);
+                if(a < def)
+                {
+                    damage--;
+                }
+            }
+        }
         currentHp -= damage;
-        float healthbarCurrent = (currentHp / maxHp) * healthbarMax;
-        healthBar.rectTransform.sizeDelta = new Vector2(healthbarCurrent, healthBar.rectTransform.sizeDelta.y);
-        anim.SetTrigger("Hurt");
+
+        UpdateHp();
+        anim.SetBool("Hurt", true);
+        anim.SetBool("Idle", false);
+        anim.SetBool("Roll", false);
+        anim.SetBool("Grounded", false);
+        anim.SetFloat("Xmove", -1);
         StartCoroutine(hurtCooldown());
+        canMove = false;
+        hurtTimer = hurtLength;
+        canHurt = false;
         if (currentHp <= 0)
         {
             // end sequence
+            Time.timeScale = 0f;
         }
     }
 
+    bool canHurt = true;
+
     public IEnumerator hurtCooldown()
     {
-        canMove = false;
         spr.color = hurtColor;
-        yield return new WaitForSeconds(hurtTime);
-        canMove = true;
+        yield return new WaitForSeconds(reactTime);
+        canHurt = true;
         spr.color = defaultColor;
     }
 }

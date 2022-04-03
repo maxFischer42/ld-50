@@ -8,6 +8,8 @@ public class EnemyHealthManager : MonoBehaviour
     public Color transparent;
     public GameObject deathEffect;
 
+    public bool counts = true;
+
     public List<GameObject> drops = new List<GameObject>();
 
     private SpriteRenderer sr;
@@ -57,10 +59,11 @@ public class EnemyHealthManager : MonoBehaviour
         a.transform.parent = null;
         randomDrop();
         Destroy(a, 0.6f);
+        if(counts) GameObject.Find("Core").GetComponent<EnemyManager>().globalEnemyCount--;
         Destroy(gameObject);
     }
 
-    float dropChance = 0.15f;
+    float dropChance = 0.2f;
 
     public void randomDrop() {
         float r = Random.Range(0.000f, 1.000f);

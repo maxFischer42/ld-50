@@ -1,10 +1,10 @@
 ammo magazine -- ammo size + []
 rifle stock -- recoil - []
-heart -- health + 
+heart -- health + []
 coffee -- speed +, recoil + []
 feather -- fall speed - []
 shoe -- jump height + []
 fire -- fire rate + []
 cinnamon roll -- roll cooldown - []
-shield -- def +
-bullet -- atk +
+shield -- def + []
+bullet -- atk + []

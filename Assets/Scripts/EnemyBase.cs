@@ -1,12 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
 
 public class EnemyBase : MonoBehaviour
 {
     private Transform playerObject;
     private Rigidbody2D rigidbody;
     public LayerMask layermask;
+    public bool hasAI = false;
+
+    public SpriteRenderer r;
 
 
     public void SetPlayer(Transform _object)
@@ -34,6 +38,11 @@ public class EnemyBase : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    private void FixedUpdate()
+    {
+        if(hasAI) r.flipX = (this.gameObject.GetComponent<IAstarAI>().velocity.x < 0 ? false : true);
     }
 
 }

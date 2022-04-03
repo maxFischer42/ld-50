@@ -6,20 +6,31 @@ public class Upgrade : MonoBehaviour
 {
     public UpgradeManager.UpgradeType myUpgrade;
     public List<Sprite> sprites = new List<Sprite>();
+    public Color myColor;
+    public RuntimeAnimatorController healAnim;
+    public bool isHeal;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.tag == "Player")
+        if (collision.gameObject.tag == "Player")
         {
-            collision.gameObject.GetComponent<UpgradeManager>().Upgrade(myUpgrade);
-            // display NEW ITEM message or something
+            if (isHeal)
+            {
+                GameObject.FindObjectOfType<PlayerHealthManager>().currentHp = GameObject.FindObjectOfType<PlayerHealthManager>().maxHp;
+                GameObject.Find("Core").GetComponent<DamagePopup>().DoText(transform.position, "HP+", myColor);
+            }
+            else {
+                collision.gameObject.GetComponent<UpgradeManager>().Upgrade(myUpgrade);
+                // display NEW ITEM message or something
+                GameObject.Find("Core").GetComponent<DamagePopup>().DoText(transform.position, myUpgrade.ToString() + "+", myColor);
+            }
             Destroy(this.gameObject);
         }
     }
 
     public void Awake()
     {
-        int r = Random.Range(0, 9);
+        int r = Random.Range(0, 13);
         switch(r)
         {
             case 0:
@@ -52,7 +63,16 @@ public class Upgrade : MonoBehaviour
             case 9:
                 myUpgrade = UpgradeManager.UpgradeType.Bullet;
                 break;
+            case 10:
+                isHeal = true;
+                break;
+            case 11:
+                isHeal = true;
+                break;
+            case 12:
+                isHeal = true;
+                break;
         }
-        transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = sprites[r];
+        if (!isHeal) { transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = sprites[r]; } else GetComponentInChildren<Animator>().runtimeAnimatorController = healAnim;
     }
 }

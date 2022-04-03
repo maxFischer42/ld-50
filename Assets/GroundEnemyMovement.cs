@@ -14,8 +14,6 @@ public class GroundEnemyMovement : EnemyBase
     public float disToGround = 1.1f;
     public LayerMask groundLayermask;
 
-    bool isJumping = false;
-
     public bool isGrounded = false;
 
     private void Start()
@@ -29,7 +27,6 @@ public class GroundEnemyMovement : EnemyBase
     {
         bool p = isGrounded;
         isGrounded = SetGrounded();
-        if (p != isGrounded) isJumping = false;
         MoveTowardsPlayer();
     }
 
@@ -55,7 +52,6 @@ public class GroundEnemyMovement : EnemyBase
             float a = Mathf.Abs((GetPlayer().transform.position.y - transform.position.y) * jumpForce);
             GetRigidBody().velocity = new Vector2(GetRigidBody().velocity.x, a);
             isGrounded = false;
-            isJumping = true;
         }
         /*
 

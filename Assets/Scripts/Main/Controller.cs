@@ -24,6 +24,8 @@ public class Controller : MonoBehaviour
 
     public float disToGround;
     public LayerMask groundLayermask;
+    public LayerMask collideLayers;
+    public LayerMask rollLayers;
 
     public enum state { idle, move, jump, hurt, roll};
     public state myState;
@@ -31,6 +33,8 @@ public class Controller : MonoBehaviour
     public GameObject jumpEffect;
     public GameObject landEffect;
     public Transform feet;
+
+    public GameObject Arms;
 
     private float slopeFriction = 1f;
 
@@ -41,8 +45,12 @@ public class Controller : MonoBehaviour
     public UpgradeManager upgrade;
 
     public float rollSpeed;
-
+    public float rollTimer = 2f;
+    bool isRoll;
+    float tempRoll;
     private PlayerHealthManager health;
+
+    public float launchforce = 10f;
 
     private void Start()
     {
@@ -59,14 +67,37 @@ public class Controller : MonoBehaviour
     void Update()
     {
         if (!health.canMove) return;
-        if (rb.velocity.x == 0 && isGrounded) { myState = state.idle; }
-        isGrounded = SetGrounded();
-        doJump();
+        if (isRoll) {
+            tempRoll -= Time.deltaTime;
+            if(tempRoll < 0)
+            {
+                isRoll = false;
+                if (Input.GetButton("Jump"))
+                {
+                    myState = state.jump;
+                    rb.velocity = new Vector2(dir * (launchforce + speedIncrease), jumpForce + jumpOffset);
+                }
+                else
+                {
+                    myState = state.idle;
+                }
+                Arms.SetActive(true);
+                canRoll = false;
+                gameObject.layer = 8;
+                StartCoroutine(startRollCooldown());
+            }
+        } else { 
+            if (!health.canMove) return;
+            if (rb.velocity.x == 0 && isGrounded) { myState = state.idle; }
+            isGrounded = SetGrounded();
+            doJump();
+        }
         HandleAnimations();
     }
 
     void FixedUpdate()
     {
+        if (!health.canMove) return;
         if (myState == state.idle) rb.velocity = Vector2.zero;
         Move();
         //NormalizeSlope();
@@ -108,18 +139,28 @@ public class Controller : MonoBehaviour
                 a.SetBool("Roll", false);
                 a.SetBool("Grounded", true);
                 a.SetFloat("Xmove", -1);
+                a.SetBool("Hurt", false);
                 break;
             case state.move:
                 a.SetBool("Idle", false);
                 a.SetBool("Roll", false);
                 a.SetBool("Grounded", true);
                 a.SetFloat("Xmove", 1);
+                a.SetBool("Hurt", false);
                 break;
             case state.jump:
                 a.SetBool("Idle", false);
                 a.SetBool("Roll", false);
                 a.SetBool("Grounded", false);
                 a.SetFloat("Xmove", -1);
+                a.SetBool("Hurt", false);
+                break;
+            case state.roll:
+                a.SetBool("Idle", false);
+                a.SetBool("Roll", true);
+                a.SetBool("Grounded", true);
+                a.SetFloat("Xmove", -1);
+                a.SetBool("Hurt", false);
                 break;
         }
     }
@@ -127,8 +168,10 @@ public class Controller : MonoBehaviour
     void Move()
     {
         if(myState == state.roll) return;
+        bool r = getRoll();
+        if (r) { MoveRoll(); return; }
         float x = getX();
-        if (x != 0) dir = (int)x;
+        dir = (Input.GetAxisRaw("Horizontal") != 0 ? (int)Input.GetAxisRaw("Horizontal") : dir);
         if (x != 0) MoveHorizontally(x);
         if(x == 0 && isGrounded) { myState = state.idle; }
     }
@@ -197,24 +240,12 @@ public class Controller : MonoBehaviour
         return grounded;
     }
 
-    public void Roll()
-    {
-        float x = dir;
-        if (isGrounded) {
-            myState = state.roll;
-            rb.velocity = Vector2.zero;
-            rb.AddForce(new Vector2(x * rollSpeed, 0f));
-        }    
-    }
-
     IEnumerator startRollCooldown()
-    {
-        canRoll = false;
+    {        
         yield return new WaitForSeconds(rollCooldown - rollOffset);
         canRoll = true;
+        GameObject.Find("Core").GetComponent<DamagePopup>().DoText(transform.position, "ROLL RESTORED", Color.white);
     }
-
-
 
     void MoveHorizontally(float i)
     {
@@ -223,10 +254,22 @@ public class Controller : MonoBehaviour
         rb.velocity = new Vector2(i * newX, rb.velocity.y);
     }
 
+    void MoveRoll()
+    {
+        if (!isGrounded) return;
+        float newX = dir * rollSpeed;
+        rb.velocity = new Vector2(newX, rb.velocity.y);
+        myState = state.roll;
+        tempRoll = rollTimer;
+        isRoll = true;
+        gameObject.layer = 11;
+        Arms.SetActive(false);
+    }
+
     public float getX() { return Input.GetAxis("Horizontal"); }
     public float getYX() { return Input.GetAxis("Vertical"); }
     public bool getAttack() { return Input.GetButton("Fire1"); }
-    public bool getRoll() { return Input.GetButtonDown("Roll"); }
+    public bool getRoll() { if (!canRoll) return false; return Input.GetButtonDown("Roll"); }
 
     public float fallOffset = 0f;
     public float jumpOffset = 0f;
@@ -235,7 +278,6 @@ public class Controller : MonoBehaviour
     public float rollCooldown = 1.5f;
 
     public float gravity = 2;
-    public float rollTimer = 3f;
     public float jump = 10;
     public float speed = 10;
 
@@ -248,11 +290,18 @@ public class Controller : MonoBehaviour
         float s = upgrade.movementIncrease;
         if (s >= 2) s = 2;
         float r = upgrade.rollDecrease;
-        if (r >= 1) r = 1;
+        if (r >= 3.5f) r = 3.5f;
 
         rb.gravityScale = gravity - f;
         jumpForce = jump + j;
         rollOffset = r;
         movementSpeed = speed + s;
+
+        int h = upgrade.healthIncrease;
+        GameObject.FindObjectOfType<PlayerHealthManager>().maxHp = 20 + h;
+        int d = upgrade.defIncrease;
+        GameObject.FindObjectOfType<PlayerHealthManager>().def = d;
+
+        GameObject.Find("GunManager").SendMessage("UpgradeCheck");
      }
 }

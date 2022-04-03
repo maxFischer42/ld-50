@@ -160,6 +160,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 3cfc32bb95c6bc840bc2f361225da88a, type: 3}
   - {fileID: 21300000, guid: b15ef7997a02e28488286ff3a4b72b5f, type: 3}
   - {fileID: 21300000, guid: 64adc3d324723fc4f8d092d903d92673, type: 3}
+  myColor: {r: 0.5411765, g: 1, b: 0.5058824, a: 1}
+  healAnim: {fileID: 9100000, guid: 78e7ec356d937214f9d78b880c9c1ef7, type: 2}
+  isHeal: 0
 --- !u!61 &6450347138631442819
 BoxCollider2D:
   m_ObjectHideFlags: 0

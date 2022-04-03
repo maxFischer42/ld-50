@@ -20,9 +20,15 @@ public class WeaponController : MonoBehaviour
     public float reloadTime = 0.8f;
     public float reloadOffset;
 
+    public int damage;
+
     public float accuracy = 1f;
 
     public bool isReload = false;
+
+    public Color numColor;
+
+    public int damageInc;
 
     IEnumerator reload(float t)
     {
@@ -45,10 +51,10 @@ public class WeaponController : MonoBehaviour
 
     private void Update()
     {
-        if (isReload) return;
+        if (isReload && currentammo > 0) return;
         HandleCooldown();
         HandleWeapon();
-        if(currentammo <= 0 && weaponCooldown > 0)
+        if(currentammo <= 0)
         {
             StartCoroutine(reload(reloadTime - reloadOffset));
         }
@@ -88,11 +94,15 @@ public class WeaponController : MonoBehaviour
         Vector3 pos;
         if(hit.collider)
         {
-            print("hit!");
+            //print("hit!");
+            
             pos = hit.point;
             //Debug Damage
             if (hit.transform.gameObject.GetComponent<DebugHealth>()) hit.transform.gameObject.GetComponent<DebugHealth>().Kill();
-            if (hit.transform.gameObject.GetComponent<EnemyHealthManager>()) hit.transform.gameObject.GetComponent<EnemyHealthManager>().DoDamage(1);
+            if (hit.transform.gameObject.GetComponent<EnemyHealthManager>()) {
+                GameObject.Find("Core").GetComponent<DamagePopup>().DoDamage(hit.point, damage + damageInc, numColor);
+                hit.transform.gameObject.GetComponent<EnemyHealthManager>().DoDamage(damage + damageInc);
+            }
         } else
         {
             pos = (direction.normalized * weaponRange) + barrel.position;
@@ -114,6 +124,9 @@ public class WeaponController : MonoBehaviour
         float f = upgrade.fireRateIncrease;
         weaponCooldown = cooldown_t - f;
         if (weaponCooldown < 0) weaponCooldown = 0;
+
+        int d = upgrade.atkIncrease;
+        damageInc = d;
 
     }
 
