@@ -30,6 +30,9 @@ public class WeaponController : MonoBehaviour
 
     public int damageInc;
 
+    public AudioClip b;
+    public AudioSource s;
+
     IEnumerator reload(float t)
     {
         isReload = true;
@@ -107,6 +110,7 @@ public class WeaponController : MonoBehaviour
         {
             pos = (direction.normalized * weaponRange) + barrel.position;
         }
+        s.PlayOneShot(b);
         lr.SetPosition(1, new Vector3(pos.x, pos.y, -1));
         isCooldown = true;
         cooldown = weaponCooldown;

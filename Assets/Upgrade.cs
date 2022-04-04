@@ -9,6 +9,8 @@ public class Upgrade : MonoBehaviour
     public Color myColor;
     public RuntimeAnimatorController healAnim;
     public bool isHeal;
+    public AudioClip upS;
+    public AudioClip hpS;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -18,12 +20,14 @@ public class Upgrade : MonoBehaviour
             {
                 GameObject.FindObjectOfType<PlayerHealthManager>().currentHp = GameObject.FindObjectOfType<PlayerHealthManager>().maxHp;
                 GameObject.Find("Core").GetComponent<DamagePopup>().DoText(transform.position, "HP+", myColor);
+                GameObject.Find("GameManagerAudio").GetComponent<AudioSource>().PlayOneShot(hpS);
             }
             else {
                 collision.gameObject.GetComponent<UpgradeManager>().Upgrade(myUpgrade);
                 // display NEW ITEM message or something
                 GameObject.Find("Core").GetComponent<DamagePopup>().DoText(transform.position, myUpgrade.ToString() + "+", myColor);
                 GameObject.Find("Core").GetComponent<DamagePopup>().UpdateUI(myUpgrade);
+                GameObject.Find("GameManagerAudio").GetComponent<AudioSource>().PlayOneShot(upS);
             }
             Destroy(this.gameObject);
         }

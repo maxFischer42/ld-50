@@ -92,7 +92,7 @@ public class PlayerHealthManager : MonoBehaviour
         if (currentHp <= 0)
         {
             // end sequence
-            Time.timeScale = 0f;
+            GameObject.FindObjectOfType<GameLoopManager>().End();
         }
     }
 

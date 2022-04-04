@@ -9,10 +9,22 @@ public class Missile : MonoBehaviour
     public Transform target;
     IAstarAI ai;
 
+    private float t;
+
+    private void FixedUpdate()
+    {
+        t += Time.deltaTime;
+        if(t > 1f)
+        {
+            GetComponent<Collider2D>().enabled = true;
+        }
+    }
+
     private void OnEnable()
     {
         target = GameObject.Find("Player").transform;
         ai = GetComponent<IAstarAI>();
+        GetComponent<Collider2D>().enabled = false;
         if (ai != null) ai.onSearchPath += Update;
     }
 

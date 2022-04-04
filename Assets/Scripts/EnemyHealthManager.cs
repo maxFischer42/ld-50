@@ -20,6 +20,8 @@ public class EnemyHealthManager : MonoBehaviour
     private float currentSat = 0;
     public bool canHurt = true;
 
+    public AudioClip sound;
+
     private void Start()
     {        
         sr = transform.GetChild(0).GetComponent<SpriteRenderer>();
@@ -60,11 +62,12 @@ public class EnemyHealthManager : MonoBehaviour
         a.transform.parent = null;
         randomDrop();
         Destroy(a, 0.6f);
-        if(counts) GameObject.Find("Core").GetComponent<EnemyManager>().globalEnemyCount--;
+        GameObject.Find("GameManagerAudio").GetComponent<AudioSource>().PlayOneShot(sound);
+        if (counts) GameObject.Find("Core").GetComponent<EnemyManager>().globalEnemyCount--;
         Destroy(gameObject);
     }
 
-    float dropChance = 0.2f;
+    float dropChance = 0.35f;
 
     public void randomDrop() {
         float r = Random.Range(0.000f, 1.000f);

@@ -7,6 +7,7 @@ public class Marker : MonoBehaviour
     private GameObject instructions;
     public bool playerInRange;
     public GameObject UpgradeObj;
+    public AudioClip sound;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -30,6 +31,7 @@ public class Marker : MonoBehaviour
         {
             GameObject a = (GameObject)Instantiate(UpgradeObj, transform.position + (Vector3.up / 2), Quaternion.identity, null);
             GameObject.Find("Core").GetComponent<GameLoopManager>().PressButton();
+            GameObject.Find("GameManagerAudio").GetComponent<AudioSource>().PlayOneShot(sound);
             Destroy(this.gameObject);
         }
     }

@@ -243,6 +243,7 @@ MonoBehaviour:
   drops: []
   maxHealth: 10
   canHurt: 1
+  sound: {fileID: 8300000, guid: 6be97a979ee87904b95931be6521e02c, type: 3}
   item: {fileID: 4737004644031516277, guid: bc125c0a7f8cf494ab49815dcd91a59f, type: 3}
 --- !u!58 &5545731886227377483
 CircleCollider2D:

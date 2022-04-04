@@ -74,8 +74,11 @@ public class Controller : MonoBehaviour
                 isRoll = false;
                 if (Input.GetButton("Jump"))
                 {
+                    isGrounded = false;
                     myState = state.jump;
+                    rolljump = true;
                     rb.velocity = new Vector2(dir * (launchforce + speedIncrease), jumpForce + jumpOffset);
+                    s.PlayOneShot(jumpS);
                 }
                 else
                 {
@@ -126,6 +129,8 @@ public class Controller : MonoBehaviour
         }
     }
 
+    bool rolljump = false;
+
     void HandleAnimations()
     {
         if (!isGrounded && myState != state.roll)
@@ -167,9 +172,12 @@ public class Controller : MonoBehaviour
 
     void Move()
     {
+        if (rolljump) return;
         if(myState == state.roll) return;
-        bool r = getRoll();
-        if (r) { MoveRoll(); return; }
+        if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftShift))
+        {
+           MoveRoll(); return;
+        }
         float x = getX();
         dir = (Input.GetAxisRaw("Horizontal") != 0 ? (int)Input.GetAxisRaw("Horizontal") : dir);
         if (x != 0) MoveHorizontally(x);
@@ -200,12 +208,13 @@ public class Controller : MonoBehaviour
             myState = state.jump;
             jumpTimeCounter = jumpTime;
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-            
+            s.PlayOneShot(jumpS);
+
         }
         if (Input.GetButton("Jump") && isJumping)
         {
             if (jumpTimeCounter > 0)
-            {
+            {               
                 rb.velocity = Vector2.up * jumpForce;
                 jumpTimeCounter -= Time.deltaTime;
             }
@@ -235,6 +244,7 @@ public class Controller : MonoBehaviour
         {
             GameObject j = (GameObject)Instantiate(landEffect, feet);
             j.transform.parent = null;
+            rolljump = false;
             Destroy(j, 0.5f);
         }        
         return grounded;
@@ -251,12 +261,14 @@ public class Controller : MonoBehaviour
     {
         float newX = movementSpeed;
         if(isGrounded) { myState = state.move; }
-        rb.velocity = new Vector2(i * newX, rb.velocity.y);
+        if(!rolljump) rb.velocity = new Vector2(i * newX, rb.velocity.y);
     }
 
     void MoveRoll()
     {
         if (!isGrounded) return;
+        if (!canRoll) return;
+        s.PlayOneShot(rollS);
         float newX = dir * rollSpeed;
         rb.velocity = new Vector2(newX, rb.velocity.y);
         myState = state.roll;
@@ -269,7 +281,6 @@ public class Controller : MonoBehaviour
     public float getX() { return Input.GetAxis("Horizontal"); }
     public float getYX() { return Input.GetAxis("Vertical"); }
     public bool getAttack() { return Input.GetButton("Fire1"); }
-    public bool getRoll() { if (!canRoll) return false; return Input.GetButtonDown("Roll"); }
 
     public float fallOffset = 0f;
     public float jumpOffset = 0f;
@@ -305,4 +316,9 @@ public class Controller : MonoBehaviour
         GameObject.Find("GunManager").SendMessage("UpgradeCheck");
 
     }
+
+    public AudioClip jumpS;
+    public AudioClip rollS;
+
+    public AudioSource s;
 }

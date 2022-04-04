@@ -113,6 +113,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   rotateOffset: 0
+  sound: {fileID: 8300000, guid: 4c7c4c5ccc88f6c49b9a21b64af716bd, type: 3}
   damage: 1
 --- !u!114 &6863862974275514083
 MonoBehaviour:
@@ -575,6 +576,7 @@ MonoBehaviour:
   drops: []
   maxHealth: 5
   canHurt: 1
+  sound: {fileID: 8300000, guid: 8faaca2911873b345ac83482f0c2f69d, type: 3}
   item: {fileID: 247890115627447077, guid: 06987eb850a0f42409a4d152d687c0ff, type: 3}
 --- !u!114 &1360488486742847802
 MonoBehaviour:

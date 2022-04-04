@@ -22,6 +22,8 @@ public class TurretController : MonoBehaviour
     public LayerMask hitLayerMask;
     public float rotateOffset;
 
+    public AudioClip sound;
+
     public int damage;
 
     private void Start()
@@ -70,6 +72,7 @@ public class TurretController : MonoBehaviour
         {
             pos = (direction.normalized * weaponRange) + (Vector2)barrel.position;
         }
+        GameObject.Find("GameManagerAudio").GetComponent<AudioSource>().PlayOneShot(sound);
         shootRay.SetPosition(1, pos);
         yield return new WaitForSeconds(lineVisible);
         shootRay.positionCount = 0;

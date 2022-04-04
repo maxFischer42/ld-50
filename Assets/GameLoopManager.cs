@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameLoopManager : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class GameLoopManager : MonoBehaviour
 
     public float globalTime = 0f;
     public float timeToIncrease = 200f;
-
+    public float timeToIncreasea = 200f;
     public RectTransform UI_arrow;
     public RectTransform node;
 
@@ -27,7 +28,14 @@ public class GameLoopManager : MonoBehaviour
 
     public Transform player;
 
+    public float seconds;
+
     public GameObject warningOverlay;
+
+    public AudioSource audioSource;
+    public AudioClip tick;
+    public GameObject effect;
+    bool uhoh = false;
 
     private void Start()
     {
@@ -37,15 +45,21 @@ public class GameLoopManager : MonoBehaviour
     private void Update()
     {
         UpdateArrow();
+        seconds += Time.deltaTime;
         globalTime += Time.deltaTime;
-        if(globalTime >= timeToIncrease)
+
+        if (countdown <= 0) { End(); return; }
+
+        if(globalTime >= timeToIncreasea)
         {
             GetComponent<EnemyManager>().INCREASE_DIFFICULTY();
             int n = GetComponent<EnemyManager>().currentDifficulty - 1;
+            timeToIncreasea = timeToIncrease - (5 * n);
             node.position = difficulties[n].position;
             globalTime = 0f;
         }
         countdown -= Time.deltaTime;
+
         if(countdown <= timer_ceiling)
         {
             timer.fillAmount = countdown / timer_ceiling;
@@ -53,6 +67,25 @@ public class GameLoopManager : MonoBehaviour
         {
             countdown = timer_ceiling;
         }
+
+        if(countdown < 30f && !uhoh) // UH OH TIME
+        {
+            audioSource.PlayOneShot(tick);
+            warningOverlay.SetActive(true);
+            effect.SetActive(true);
+            uhoh = true;
+        } else if (countdown > 30f)
+        {
+            warningOverlay.SetActive(false);
+            effect.SetActive(false);
+            uhoh = false;
+        }
+    }
+
+    public void End()
+    {
+        PlayerPrefs.SetFloat("time", seconds);
+        SceneManager.LoadScene("GameOver");
     }
 
     void ChangePosition()
