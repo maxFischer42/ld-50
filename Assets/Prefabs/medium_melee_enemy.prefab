@@ -473,6 +473,7 @@ MonoBehaviour:
   currentColor: {r: 1, g: 1, b: 1, a: 0}
   transparent: {r: 1, g: 0, b: 0, a: 0.69411767}
   deathEffect: {fileID: 3508836464001563175, guid: ef7ff233beb02a14eb807d60a3f19d16, type: 3}
+  counts: 1
   drops: []
   maxHealth: 5
   canHurt: 1
@@ -498,7 +499,7 @@ MonoBehaviour:
   jumpingDistance: 6
   stopDistance: 2
   chaseSpeed: 4.5
-  jumpForce: 6
+  jumpForce: 4
   disToGround: 1.1
   groundLayermask:
     serializedVersion: 2

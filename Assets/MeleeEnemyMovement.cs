@@ -18,6 +18,9 @@ public class MeleeEnemyMovement : EnemyBase
     public Animator a;
     public Animator a2;
 
+    private Vector3 offsetA = new Vector3(-0.5f, 0f, 0f);
+    private Vector3 offsetB = new Vector3(0.5f, -0.3f, 0f);
+
     private void Start()
     {
         SetPlayer(GameObject.Find("Player").transform);
@@ -39,6 +42,15 @@ public class MeleeEnemyMovement : EnemyBase
 
     void MoveTowardsPlayer()
     {
+        // CHECK IF HUGGING A WALL
+        var hit = Physics2D.OverlapArea(transform.position + offsetA, transform.position + offsetB, groundLayermask);
+        if (hit)
+        {
+            transform.position += Vector3.up / 2;
+            return;
+        }
+
+
         if (playerInRange(stopDistance) && isGrounded)
         {
             GetRigidBody().velocity = Vector2.zero;

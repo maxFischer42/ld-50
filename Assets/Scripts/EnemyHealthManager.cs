@@ -56,6 +56,7 @@ public class EnemyHealthManager : MonoBehaviour
     public void Kill()
     {
         GameObject a = (GameObject)Instantiate(deathEffect, transform);
+        GameObject.Find("Core").GetComponent<EnemyManager>().currentEnemies.Remove(this.gameObject);
         a.transform.parent = null;
         randomDrop();
         Destroy(a, 0.6f);

@@ -34,21 +34,24 @@ public class EnemyManager : MonoBehaviour
     public void INCREASE_DIFFICULTY()
     {
         currentDifficulty++;
-        MAX_ENEMIES += 2;
+        MAX_ENEMIES += 4;
         if (currentDifficulty > difficulties) currentDifficulty = difficulties;
     }
 
     public void InstantiateObject(GameObject p, Vector2 pos)
     {
         globalEnemyCount++;
-        Instantiate(p, pos, Quaternion.identity);
+        GameObject a = (GameObject)Instantiate(p, pos, Quaternion.identity);
+        currentEnemies.Add(a);
     }
 
     public Transform GetSpawnClosestToPlayer()
     {
-        int r = Random.Range(0, spawnPoints.Length);
-        return spawnPoints[r];
+        int r = Random.Range(0, GetComponent<GameLoopManager>().currentSpawnAreas.childCount - 1);
+        return GetComponent<GameLoopManager>().currentSpawnAreas.GetChild(r);
     }
+
+    public List<GameObject> currentEnemies = new List<GameObject>();
 
     public void SpawnSwarmOfEnemies()
     {
@@ -58,6 +61,7 @@ public class EnemyManager : MonoBehaviour
         foreach(GameObject e in enemiesToSpawn)
         {
             InstantiateObject(e, (Vector2)spawnPos.position + (Vector2.right * offset));
+            
             offset += 0.5f;
         }
     }
@@ -136,6 +140,25 @@ public class EnemyManager : MonoBehaviour
             list.Add(enemy);
         }
         return list;
+    }
+
+    public float distanceToDespawn = 100;
+
+    public void checkEnemyDespawn()
+    {
+        Vector3 p = GameObject.Find("Player").transform.position;
+        List<GameObject> h = currentEnemies;
+        foreach (GameObject n in h)
+        {
+            var a = p - n.transform.position;
+            var b = a.magnitude;
+            if(b > distanceToDespawn)
+            {
+                currentEnemies.Remove(n);
+                globalEnemyCount--;
+                Destroy(n);
+            }
+        }
     }
 
 }

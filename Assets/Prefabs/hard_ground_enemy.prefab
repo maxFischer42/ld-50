@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerVisible: 0
-  sightRange: 8
+  sightRange: 12
   layermask:
     serializedVersion: 2
     m_Bits: 321
@@ -113,7 +113,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 320
   rotateOffset: 0
-  damage: 1
+  damage: 2
 --- !u!114 &6863862974275514083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,7 +335,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
@@ -554,7 +554,7 @@ MonoBehaviour:
   jumpingDistance: 13
   stopDistance: 2
   chaseSpeed: 4
-  jumpForce: 8
+  jumpForce: 3
   disToGround: 1.1
   groundLayermask:
     serializedVersion: 2
@@ -622,6 +622,7 @@ MonoBehaviour:
   currentColor: {r: 1, g: 1, b: 1, a: 0}
   transparent: {r: 1, g: 0, b: 0, a: 0.69411767}
   deathEffect: {fileID: 3508836464001563175, guid: ef7ff233beb02a14eb807d60a3f19d16, type: 3}
+  counts: 1
   drops: []
   maxHealth: 5
   canHurt: 1

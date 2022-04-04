@@ -203,7 +203,7 @@ MonoBehaviour:
   targetCompatibility: {fileID: 0}
   maxAcceleration: 10
   rotationSpeed: 360
-  slowdownDistance: 4
+  slowdownDistance: 2
   pickNextWaypointDist: 2
   endReachedDistance: 0
   alwaysDrawGizmos: 0

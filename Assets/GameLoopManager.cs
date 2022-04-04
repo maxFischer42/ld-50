@@ -84,4 +84,13 @@ public class GameLoopManager : MonoBehaviour
         UI_arrow.localEulerAngles = new Vector3(0f, 0f, angle);
         
     }
+
+    public Transform[] spawnAreas;
+    public Transform currentSpawnAreas;
+
+    public void changeArea(int area)
+    {
+        currentSpawnAreas = spawnAreas[area - 1];
+        GetComponent<EnemyManager>().checkEnemyDespawn();
+    }
 }

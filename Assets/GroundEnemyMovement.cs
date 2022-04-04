@@ -30,28 +30,39 @@ public class GroundEnemyMovement : EnemyBase
         MoveTowardsPlayer();
     }
 
+    private Vector3 offsetA = new Vector3(-0.7f, 0f, 0f);
+    private Vector3 offsetB = new Vector3(0.7f, -0.7f, 0f);
+
     void MoveTowardsPlayer()
     {
+        // CHECK IF HUGGING A WALL
+        var hit = Physics2D.OverlapArea(transform.position + offsetA, transform.position + offsetB, groundLayermask);
+        if(hit)
+        {
+            transform.position += Vector3.up / 2;
+            return;
+        }
+
         if(playerInRange(stopDistance) && isGrounded)
         {
             GetRigidBody().velocity = Vector2.zero;
             return;
         }
 
-        if (playerInRange(distanceToPlayer))
+        
+
+
+        if(playerInRange(jumpingDistance) && !playerInRange(stopDistance) && GameObject.Find("Player").transform.position.y - transform.position.y > 5f)
+        {
+            //float a = Mathf.Abs((GetPlayer().transform.position.y - transform.position.y) * jumpForce);
+            GetRigidBody().velocity = new Vector2(GetRigidBody().velocity.x, jumpForce);
+            isGrounded = false;
+        } else
         {
             Vector2 dir = (GetPlayer().transform.position - transform.position).normalized;
             dir *= chaseSpeed;
             dir = new Vector2(dir.x, GetRigidBody().velocity.y);
             GetRigidBody().velocity = dir;
-
-        }
-
-        if(playerInRange(jumpingDistance) && !playerInRange(stopDistance) && isGrounded)
-        {
-            float a = Mathf.Abs((GetPlayer().transform.position.y - transform.position.y) * jumpForce);
-            GetRigidBody().velocity = new Vector2(GetRigidBody().velocity.x, a);
-            isGrounded = false;
         }
         /*
 

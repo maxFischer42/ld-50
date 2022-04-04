@@ -99,6 +99,8 @@ public class TurretController : MonoBehaviour
             {
                 playerVisible = false;
                 targetRay.positionCount = 0;
+                print(hit.point + " " + hit.collider.name);
+
             }
         } else
         {

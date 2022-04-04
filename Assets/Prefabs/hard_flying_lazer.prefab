@@ -106,7 +106,7 @@ MonoBehaviour:
     m_Bits: 320
   targetRay: {fileID: 2662065779890486955}
   shootRay: {fileID: 6462822922397802834}
-  timeToShoot: 6
+  timeToShoot: 1
   barrel: {fileID: 7576528577323137584}
   weaponRange: 26
   hitLayerMask:
@@ -335,7 +335,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
