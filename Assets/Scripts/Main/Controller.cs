@@ -67,6 +67,10 @@ public class Controller : MonoBehaviour
     void Update()
     {
         if (!health.canMove) return;
+        if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftShift) && !isRoll && isGrounded)
+        {
+            MoveRoll(); return;
+        }
         if (isRoll) {
             tempRoll -= Time.deltaTime;
             if(tempRoll < 0)
@@ -174,10 +178,6 @@ public class Controller : MonoBehaviour
     {
         if (rolljump) return;
         if(myState == state.roll) return;
-        if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftShift))
-        {
-           MoveRoll(); return;
-        }
         float x = getX();
         dir = (Input.GetAxisRaw("Horizontal") != 0 ? (int)Input.GetAxisRaw("Horizontal") : dir);
         if (x != 0) MoveHorizontally(x);

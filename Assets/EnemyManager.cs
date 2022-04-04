@@ -36,6 +36,14 @@ public class EnemyManager : MonoBehaviour
         currentDifficulty++;
         MAX_ENEMIES += 4;
         if (currentDifficulty > difficulties) currentDifficulty = difficulties;
+        if(currentDifficulty == 5)
+        {
+            GetComponent<GameLoopManager>().ChangeMusic(5);
+        }
+        if (currentDifficulty == 9)
+        {
+            GetComponent<GameLoopManager>().ChangeMusic(9);
+        }
     }
 
     public void InstantiateObject(GameObject p, Vector2 pos)

@@ -21,12 +21,14 @@ public class EnemyHealthManager : MonoBehaviour
     public bool canHurt = true;
 
     public AudioClip sound;
+    public AudioClip hitsound;
 
     private void Start()
     {        
         sr = transform.GetChild(0).GetComponent<SpriteRenderer>();
         currentColor = sr.color;
         CalcColorPerDamage();
+        maxHealth += GameObject.Find("Core").GetComponent<GameLoopManager>().hpInc;
     }
 
     private void CalcColorPerDamage()
@@ -40,6 +42,7 @@ public class EnemyHealthManager : MonoBehaviour
         if (!canHurt) return;
         currentHealth += damage;
         if (currentHealth >= maxHealth) Kill();
+        GameObject.Find("GameManagerAudio").GetComponent<AudioSource>().PlayOneShot(hitsound);
         StartCoroutine(DamageColor());
     }
 
@@ -67,7 +70,7 @@ public class EnemyHealthManager : MonoBehaviour
         Destroy(gameObject);
     }
 
-    float dropChance = 0.35f;
+    float dropChance = 0.125f;
 
     public void randomDrop() {
         float r = Random.Range(0.000f, 1.000f);

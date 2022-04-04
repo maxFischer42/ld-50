@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 100931788196466572}
   - component: {fileID: 3224476601862663604}
   - component: {fileID: 7481556236986369309}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Spr
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -116,7 +116,7 @@ GameObject:
   - component: {fileID: 6450347138631442819}
   - component: {fileID: -3461017066234360075}
   - component: {fileID: 179737567238084269}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Upgrade (0)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -33,17 +33,67 @@ public class GameLoopManager : MonoBehaviour
     public GameObject warningOverlay;
 
     public AudioSource audioSource;
+
+    public AudioSource[] sfx;
+    public AudioSource bgm;
     public AudioClip tick;
     public GameObject effect;
     bool uhoh = false;
 
+    public AudioClip easyMusic;
+    public AudioClip mediumMusic;
+    public AudioClip hardMusic;
+
+    public void ChangeMusic(int difficulty)
+    {
+        if(difficulty == 5)
+        {
+            bgm.Stop();
+            bgm.clip = mediumMusic;
+            bgm.Play();
+        } else if(difficulty == 9)
+        {
+            bgm.Stop();
+            bgm.clip = hardMusic;
+            bgm.Play();
+        }
+    }
+
     private void Start()
     {
         player = GameObject.Find("Player").transform;
+        foreach(AudioSource a in sfx)
+        {
+            a.volume = PlayerPrefs.GetFloat("sfx");
+        }
+        bgm.volume = PlayerPrefs.GetFloat("bgm") * 0.15f;
+        bgm.clip = easyMusic;
+        bgm.Play();
     }
+
+    public int hpInc = 0;
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (Time.timeScale == 0)
+            {
+                Time.timeScale = 1;
+                print("unpause");
+
+            }
+            else
+            {
+                Time.timeScale = 0;
+                print("pause");
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            Application.Quit();
+        }
         UpdateArrow();
         seconds += Time.deltaTime;
         globalTime += Time.deltaTime;
@@ -54,7 +104,7 @@ public class GameLoopManager : MonoBehaviour
         {
             GetComponent<EnemyManager>().INCREASE_DIFFICULTY();
             int n = GetComponent<EnemyManager>().currentDifficulty - 1;
-            timeToIncreasea = timeToIncrease - (5 * n);
+            hpInc += 3;
             node.position = difficulties[n].position;
             globalTime = 0f;
         }
