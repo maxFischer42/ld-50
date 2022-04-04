@@ -229,14 +229,14 @@ public class Controller : MonoBehaviour
         }
         lr.SetPosition(0, transform.position);
         lr.SetPosition(1, new Vector2(transform.position.x, transform.position.y - disToGround));
-        var hit = Physics2D.Raycast(transform.position, Vector3.down, disToGround, groundLayermask);
+        var hit = Physics2D.Raycast(feet.position, Vector3.down, disToGround, groundLayermask);
         bool grounded = hit.collider;
         if(grounded && checkLand)
         {
             GameObject j = (GameObject)Instantiate(landEffect, feet);
             j.transform.parent = null;
             Destroy(j, 0.5f);
-        }
+        }        
         return grounded;
     }
 
@@ -303,5 +303,6 @@ public class Controller : MonoBehaviour
         GameObject.FindObjectOfType<PlayerHealthManager>().def = d;
 
         GameObject.Find("GunManager").SendMessage("UpgradeCheck");
-     }
+
+    }
 }

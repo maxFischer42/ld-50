@@ -46,20 +46,20 @@ bullet -- atk +
                 healthIncrease += 10;
                 break;
             case UpgradeType.Coffee:
-                movementIncrease += 0.05f;
+                movementIncrease += 0.08f;
                 recoilIncrease += 0.04f;
                 break;
             case UpgradeType.Feather:
-                fallDecrease += 0.02f;
+                fallDecrease += 0.06f;
                 break;
             case UpgradeType.Shoe:
-                jumpIncrease += 0.05f;
+                jumpIncrease += 0.1f;
                 break;
             case UpgradeType.Fire:
-                fireRateIncrease += 0.005f;
+                fireRateIncrease += 0.01f;
                 break;
             case UpgradeType.Roll:
-                rollDecrease += 0.01f;
+                rollDecrease += 0.03f;
                 break;
             case UpgradeType.Shield:
                 defIncrease += 1;

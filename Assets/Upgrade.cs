@@ -23,6 +23,7 @@ public class Upgrade : MonoBehaviour
                 collision.gameObject.GetComponent<UpgradeManager>().Upgrade(myUpgrade);
                 // display NEW ITEM message or something
                 GameObject.Find("Core").GetComponent<DamagePopup>().DoText(transform.position, myUpgrade.ToString() + "+", myColor);
+                GameObject.Find("Core").GetComponent<DamagePopup>().UpdateUI(myUpgrade);
             }
             Destroy(this.gameObject);
         }

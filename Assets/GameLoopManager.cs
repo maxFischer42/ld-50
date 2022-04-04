@@ -27,6 +27,8 @@ public class GameLoopManager : MonoBehaviour
 
     public Transform player;
 
+    public GameObject warningOverlay;
+
     private void Start()
     {
         player = GameObject.Find("Player").transform;
